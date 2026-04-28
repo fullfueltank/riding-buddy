@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -9,539 +8,538 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
-
-:root {
-–black: #0a0a0a;
-–white: #ffffff;
-–red: #0984E3;
-–gray: #888;
-–light-gray: #f5f5f5;
-–border: #e0e0e0;
-}
-
-/* STEP UI */
-.step-indicator {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 0;
-margin-bottom: 32px;
-padding: 0 8px;
-}
-
-.step-item {
-display: flex;
-flex-direction: column;
-align-items: center;
-gap: 6px;
-}
-
-.step-circle {
-width: 32px;
-height: 32px;
-border-radius: 50%;
-border: 2px solid var(–border);
-background: var(–white);
-color: var(–gray);
-font-size: 13px;
-font-weight: 700;
-display: flex;
-align-items: center;
-justify-content: center;
-transition: all 0.3s;
-}
-
-.step-circle.active {
-border-color: var(–red);
-background: var(–red);
-color: var(–white);
-}
-
-.step-circle.done {
-border-color: var(–red);
-background: var(–white);
-color: var(–red);
-}
-
-.step-label {
-font-size: 11px;
-color: var(–gray);
-white-space: nowrap;
-}
-
-.step-label.active { color: var(–red); font-weight: 500; }
-
-.step-line {
-width: 48px;
-height: 2px;
-background: var(–border);
-margin-bottom: 18px;
-transition: background 0.3s;
-}
-
-.step-line.done { background: var(–red); }
-
-.step-section { display: none; }
-.step-section.active { display: block; }
-
-.step-nav {
-display: flex;
-gap: 12px;
-margin-top: 8px;
-}
-
-.btn-prev {
-flex: 1;
-padding: 16px;
-background: var(–light-gray);
-color: var(–black);
-border: none;
-border-radius: 8px;
-font-size: 15px;
-font-family: ‘Noto Sans KR’, sans-serif;
-cursor: pointer;
-}
-
-.btn-next {
-flex: 2;
-padding: 16px;
-background: var(–red);
-color: var(–white);
-border: none;
-border-radius: 8px;
-font-size: 15px;
-font-weight: 500;
-font-family: ‘Noto Sans KR’, sans-serif;
-cursor: pointer;
-}
-
-body {
-font-family: ‘Noto Sans KR’, sans-serif;
-background: var(–white);
-color: var(–black);
-line-height: 1.6;
-}
-
-.hero {
-background: var(–black);
-color: var(–white);
-padding: 80px 24px 60px;
-text-align: center;
-}
-
-.hero-tag {
-font-size: 11px;
-letter-spacing: 4px;
-color: var(–red);
-text-transform: uppercase;
-margin-bottom: 20px;
-}
-
-.hero-title {
-font-size: clamp(48px, 10vw, 80px);
-font-weight: 700;
-line-height: 1.1;
-margin-bottom: 16px;
-}
-
-.hero-title span { color: var(–red); }
-
-.hero-sub {
-font-size: 15px;
-font-weight: 300;
-color: rgba(255,255,255,0.6);
-margin-bottom: 40px;
-line-height: 1.8;
-}
-
-.badge-row {
-display: flex;
-gap: 8px;
-justify-content: center;
-flex-wrap: wrap;
-}
-
-.badge {
-background: rgba(255,255,255,0.08);
-border: 1px solid rgba(255,255,255,0.15);
-color: rgba(255,255,255,0.7);
-padding: 6px 14px;
-border-radius: 20px;
-font-size: 12px;
-letter-spacing: 1px;
-}
-
-.section {
-padding: 48px 24px;
-max-width: 480px;
-margin: 0 auto;
-}
-
-.section-title {
-font-size: 13px;
-font-weight: 500;
-letter-spacing: 3px;
-text-transform: uppercase;
-color: var(–red);
-margin-bottom: 20px;
-}
-
-.info-list {
-list-style: none;
-display: flex;
-flex-direction: column;
-gap: 12px;
-}
-
-.info-list li {
-display: flex;
-align-items: flex-start;
-gap: 10px;
-font-size: 14px;
-font-weight: 300;
-color: #333;
-line-height: 1.6;
-}
-
-.info-list li::before {
-content: ‘’;
-width: 4px;
-height: 4px;
-border-radius: 50%;
-background: var(–red);
-margin-top: 8px;
-flex-shrink: 0;
-}
-
-.divider {
-height: 1px;
-background: var(–border);
-margin: 0 24px;
-}
-
-.form-section {
-padding: 48px 24px;
-max-width: 480px;
-margin: 0 auto;
-}
-
-.form-group {
-margin-bottom: 24px;
-}
-
-.form-label {
-display: block;
-font-size: 13px;
-font-weight: 500;
-margin-bottom: 8px;
-color: var(–black);
-}
-
-.form-label .required {
-color: var(–red);
-margin-left: 2px;
-}
-
-.form-input {
-width: 100%;
-padding: 12px 16px;
-border: 1.5px solid var(–border);
-border-radius: 8px;
-font-size: 14px;
-font-family: ‘Noto Sans KR’, sans-serif;
-background: var(–white);
-color: var(–black);
-transition: border-color 0.2s;
-outline: none;
-appearance: none;
-}
-
-.form-input:focus {
-border-color: var(–black);
-}
-
-select.form-input {
-background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘12’ height=‘8’ viewBox=‘0 0 12 8’%3E%3Cpath d=‘M1 1l5 5 5-5’ stroke=’%23888’ stroke-width=‘1.5’ fill=‘none’ stroke-linecap=‘round’/%3E%3C/svg%3E”);
-background-repeat: no-repeat;
-background-position: right 14px center;
-padding-right: 40px;
-}
-
-.form-hint {
-font-size: 12px;
-color: var(–gray);
-margin-top: 6px;
-}
-
-.price-box {
-background: var(–light-gray);
-border-radius: 12px;
-padding: 24px;
-margin-bottom: 24px;
-}
-
-.price-row {
-display: flex;
-justify-content: space-between;
-align-items: center;
-font-size: 14px;
-color: #555;
-margin-bottom: 10px;
-}
-
-.price-total {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding-top: 12px;
-border-top: 1px solid var(–border);
-font-weight: 700;
-font-size: 18px;
-}
-
-.submit-btn {
-width: 100%;
-padding: 18px;
-background: var(–black);
-color: var(–white);
-border: none;
-border-radius: 8px;
-font-size: 16px;
-font-weight: 500;
-font-family: ‘Noto Sans KR’, sans-serif;
-cursor: pointer;
-transition: background 0.2s;
-letter-spacing: 1px;
-}
-
-.submit-btn:hover { background: #222; }
-.submit-btn:active { background: var(–red); }
-
-.account-box {
-background: var(–black);
-color: var(–white);
-border-radius: 12px;
-padding: 24px;
-margin-top: 16px;
-}
-
-.account-box .label {
-font-size: 11px;
-letter-spacing: 3px;
-text-transform: uppercase;
-color: var(–red);
-margin-bottom: 16px;
-}
-
-.account-row {
-display: flex;
-justify-content: space-between;
-font-size: 14px;
-margin-bottom: 8px;
-}
-
-.account-row .key { color: rgba(255,255,255,0.5); font-weight: 300; }
-.account-row .val { font-weight: 500; }
-
-.account-note {
-margin-top: 16px;
-font-size: 12px;
-font-weight: 300;
-color: rgba(255,255,255,0.5);
-line-height: 1.8;
-border-top: 1px solid rgba(255,255,255,0.1);
-padding-top: 14px;
-}
-
-.notice-box {
-background: #fff8f6;
-border: 1px solid #ffd5c8;
-border-radius: 8px;
-padding: 16px;
-margin-top: 16px;
-font-size: 13px;
-color: #c0392b;
-line-height: 1.7;
-font-weight: 300;
-}
-
-.reviews-section {
-padding: 48px 24px;
-max-width: 480px;
-margin: 0 auto;
-}
-
-.review-form {
-background: var(–light-gray);
-border-radius: 12px;
-padding: 24px;
-margin-bottom: 24px;
-}
-
-.stars {
-display: flex;
-gap: 4px;
-margin-bottom: 12px;
-cursor: pointer;
-}
-
-.star {
-font-size: 24px;
-color: #ddd;
-transition: color 0.15s;
-user-select: none;
-}
-
-.star.active { color: #f5a623; }
-
-.review-input {
-width: 100%;
-padding: 12px 16px;
-border: 1.5px solid var(–border);
-border-radius: 8px;
-font-size: 14px;
-font-family: ‘Noto Sans KR’, sans-serif;
-resize: none;
-height: 80px;
-outline: none;
-margin-bottom: 12px;
-background: var(–white);
-}
-
-.review-input:focus { border-color: var(–black); }
-
-.review-submit {
-padding: 10px 20px;
-background: var(–black);
-color: var(–white);
-border: none;
-border-radius: 6px;
-font-size: 13px;
-font-family: ‘Noto Sans KR’, sans-serif;
-cursor: pointer;
-}
-
-.review-list {
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-
-.review-item {
-border-bottom: 1px solid var(–border);
-padding-bottom: 16px;
-}
-
-.review-meta {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 6px;
-}
-
-.review-stars { color: #f5a623; font-size: 13px; }
-.review-date { font-size: 12px; color: var(–gray); }
-.review-text { font-size: 14px; font-weight: 300; line-height: 1.7; color: #333; }
-
-.modal-overlay {
-display: none;
-position: fixed;
-top: 0; left: 0;
-width: 100%; height: 100%;
-background: rgba(0,0,0,0.7);
-z-index: 100;
-align-items: center;
-justify-content: center;
-padding: 24px;
-}
-
-.modal-overlay.active { display: flex; }
-
-.modal {
-background: var(–white);
-border-radius: 16px;
-padding: 36px 28px;
-max-width: 380px;
-width: 100%;
-text-align: center;
-}
-
-.modal-icon {
-font-size: 40px;
-margin-bottom: 16px;
-}
-
-.modal-title {
-font-size: 20px;
-font-weight: 700;
-margin-bottom: 10px;
-}
-
-.modal-text {
-font-size: 14px;
-font-weight: 300;
-color: #555;
-line-height: 1.8;
-margin-bottom: 24px;
-}
-
-.modal-btn {
-width: 100%;
-padding: 14px;
-background: var(–black);
-color: var(–white);
-border: none;
-border-radius: 8px;
-font-size: 15px;
-font-family: ‘Noto Sans KR’, sans-serif;
-cursor: pointer;
-margin-bottom: 10px;
-}
-
-.modal-btn.secondary {
-background: var(–light-gray);
-color: var(–black);
-}
-
-.footer {
-background: var(–black);
-color: rgba(255,255,255,0.4);
-text-align: center;
-padding: 32px 24px;
-font-size: 12px;
-font-weight: 300;
-letter-spacing: 2px;
-}
-
-.footer a {
-color: var(–red);
-text-decoration: none;
-}
-
-.consent-row {
-display: flex;
-align-items: flex-start;
-gap: 10px;
-margin-bottom: 24px;
-}
-
-.consent-row input[type=“checkbox”] {
-width: 18px;
-height: 18px;
-margin-top: 2px;
-accent-color: var(–black);
-flex-shrink: 0;
-}
-
-.consent-row label {
-font-size: 13px;
-font-weight: 300;
-color: #555;
-line-height: 1.6;
-}
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --red: #0984E3;
+    --gray: #888;
+    --light-gray: #f5f5f5;
+    --border: #e0e0e0;
+  }
+
+  /* STEP UI */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 32px;
+    padding: 0 8px;
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .step-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--white);
+    color: var(--gray);
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+
+  .step-circle.active {
+    border-color: var(--red);
+    background: var(--red);
+    color: var(--white);
+  }
+
+  .step-circle.done {
+    border-color: var(--red);
+    background: var(--white);
+    color: var(--red);
+  }
+
+  .step-label {
+    font-size: 11px;
+    color: var(--gray);
+    white-space: nowrap;
+  }
+
+  .step-label.active { color: var(--red); font-weight: 500; }
+
+  .step-line {
+    width: 48px;
+    height: 2px;
+    background: var(--border);
+    margin-bottom: 18px;
+    transition: background 0.3s;
+  }
+
+  .step-line.done { background: var(--red); }
+
+  .step-section { display: none; }
+  .step-section.active { display: block; }
+
+  .step-nav {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .btn-prev {
+    flex: 1;
+    padding: 16px;
+    background: var(--light-gray);
+    color: var(--black);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  .btn-next {
+    flex: 2;
+    padding: 16px;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+  }
+
+  .hero {
+    background: var(--black);
+    color: var(--white);
+    padding: 80px 24px 60px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-size: clamp(48px, 10vw, 80px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero-title span { color: var(--red); }
+
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .section {
+    padding: 48px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 20px;
+  }
+
+  .info-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .info-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 300;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .info-list li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--red);
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 24px;
+  }
+
+  .form-section {
+    padding: 48px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--black);
+  }
+
+  .form-label .required {
+    color: var(--red);
+    margin-left: 2px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    transition: border-color 0.2s;
+    outline: none;
+    appearance: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--black);
+  }
+
+  select.form-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 6px;
+  }
+
+  .price-box {
+    background: var(--light-gray);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .submit-btn:hover { background: #222; }
+  .submit-btn:active { background: var(--red); }
+
+  .account-box {
+    background: var(--black);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+  }
+
+  .account-box .label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  .account-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .account-row .key { color: rgba(255,255,255,0.5); font-weight: 300; }
+  .account-row .val { font-weight: 500; }
+
+  .account-note {
+    margin-top: 16px;
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 14px;
+  }
+
+  .notice-box {
+    background: #fff8f6;
+    border: 1px solid #ffd5c8;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #c0392b;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .reviews-section {
+    padding: 48px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .review-form {
+    background: var(--light-gray);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+
+  .star {
+    font-size: 24px;
+    color: #ddd;
+    transition: color 0.15s;
+    user-select: none;
+  }
+
+  .star.active { color: #f5a623; }
+
+  .review-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    resize: none;
+    height: 80px;
+    outline: none;
+    margin-bottom: 12px;
+    background: var(--white);
+  }
+
+  .review-input:focus { border-color: var(--black); }
+
+  .review-submit {
+    padding: 10px 20px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .review-item {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+  }
+
+  .review-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .review-stars { color: #f5a623; font-size: 13px; }
+  .review-date { font-size: 12px; color: var(--gray); }
+  .review-text { font-size: 14px; font-weight: 300; line-height: 1.7; color: #333; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .modal-text {
+    font-size: 14px;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .modal-btn.secondary {
+    background: var(--light-gray);
+    color: var(--black);
+  }
+
+  .footer {
+    background: var(--black);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 2px;
+  }
+
+  .footer a {
+    color: var(--red);
+    text-decoration: none;
+  }
+
+  .consent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .consent-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--black);
+    flex-shrink: 0;
+  }
+
+  .consent-row label {
+    font-size: 13px;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.6;
+  }
 </style>
-
 </head>
 <body>
 
@@ -590,7 +588,6 @@ line-height: 1.6;
   <div class="section-title">매칭 신청하기</div>
 
   <!-- 스텝 인디케이터 -->
-
   <div class="step-indicator">
     <div class="step-item">
       <div class="step-circle active" id="circle-1">1</div>
@@ -614,7 +611,6 @@ line-height: 1.6;
   </div>
 
   <!-- STEP 1 -->
-
   <div class="step-section active" id="step-1">
     <div class="form-group">
       <label class="form-label">이름 <span class="required">*</span></label>
@@ -650,7 +646,6 @@ line-height: 1.6;
   </div>
 
   <!-- STEP 2 -->
-
   <div class="step-section" id="step-2">
     <div class="form-group">
       <label class="form-label">바이크 종류 <span class="required">*</span></label>
@@ -704,140 +699,136 @@ line-height: 1.6;
   </div>
 
   <!-- STEP 3 -->
-
   <div class="step-section" id="step-3">
 
-```
-<div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">라이딩 취향</div>
+    <div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">라이딩 취향</div>
 
-<div class="form-group">
-  <label class="form-label">라이딩 스타일 <span class="required">*</span></label>
-  <select class="form-input" id="style">
-    <option value="">선택해주세요</option>
-    <option>시내</option>
-    <option>와인딩</option>
-    <option>투어링</option>
-  </select>
-</div>
-<div class="form-group">
-  <label class="form-label">주로 타는 시간대 <span class="required">*</span></label>
-  <select class="form-input" id="ride-time">
-    <option value="">선택해주세요</option>
-    <option>주중 낮</option>
-    <option>주중 저녁</option>
-    <option>주말</option>
-  </select>
-</div>
-<div class="form-group">
-  <label class="form-label">라이딩 페이스 <span class="required">*</span></label>
-  <select class="form-input" id="pace">
-    <option value="">선택해주세요</option>
-    <option>여유롭게</option>
-    <option>보통</option>
-    <option>빠르게</option>
-  </select>
-</div>
-<div class="form-group">
-  <label class="form-label">선호 라이딩 거리 <span class="required">*</span></label>
-  <select class="form-input" id="distance">
-    <option value="">선택해주세요</option>
-    <option>가볍게 (카페 투어, 10km 내외)</option>
-    <option>적당히 (50km 내외)</option>
-    <option>원 없이 (100km 이상)</option>
-  </select>
-</div>
+    <div class="form-group">
+      <label class="form-label">라이딩 스타일 <span class="required">*</span></label>
+      <select class="form-input" id="style">
+        <option value="">선택해주세요</option>
+        <option>시내</option>
+        <option>와인딩</option>
+        <option>투어링</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">주로 타는 시간대 <span class="required">*</span></label>
+      <select class="form-input" id="ride-time">
+        <option value="">선택해주세요</option>
+        <option>주중 낮</option>
+        <option>주중 저녁</option>
+        <option>주말</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">라이딩 페이스 <span class="required">*</span></label>
+      <select class="form-input" id="pace">
+        <option value="">선택해주세요</option>
+        <option>여유롭게</option>
+        <option>보통</option>
+        <option>빠르게</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">선호 라이딩 거리 <span class="required">*</span></label>
+      <select class="form-input" id="distance">
+        <option value="">선택해주세요</option>
+        <option>가볍게 (카페 투어, 10km 내외)</option>
+        <option>적당히 (50km 내외)</option>
+        <option>원 없이 (100km 이상)</option>
+      </select>
+    </div>
 
-<div style="height:1px; background:var(--border); margin: 24px 0;"></div>
-<div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">매칭 조건</div>
+    <div style="height:1px; background:var(--border); margin: 24px 0;"></div>
+    <div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">매칭 조건</div>
 
-<div class="form-group">
-  <label class="form-label">본인 성별 <span class="required">*</span></label>
-  <select class="form-input" id="gender">
-    <option value="">선택해주세요</option>
-    <option>남성</option>
-    <option>여성</option>
-  </select>
-</div>
-<div class="form-group">
-  <label class="form-label">선호 성별 <span class="required">*</span></label>
-  <select class="form-input" id="preferred-gender">
-    <option value="">선택해주세요</option>
-    <option>남성</option>
-    <option>여성</option>
-    <option>상관없음</option>
-  </select>
-</div>
-<div class="form-group">
-  <label class="form-label">선호 인원 <span class="required">*</span></label>
-  <select class="form-input" id="group-size">
-    <option value="">선택해주세요</option>
-    <option>1:1 버디</option>
-    <option>소그룹 (3~5명)</option>
-    <option>상관없음</option>
-  </select>
-</div>
-<div class="form-group">
-  <label class="form-label">한 줄 소개</label>
-  <input type="text" class="form-input" id="intro" placeholder="자유롭게 적어주세요 (선택)">
-</div>
+    <div class="form-group">
+      <label class="form-label">본인 성별 <span class="required">*</span></label>
+      <select class="form-input" id="gender">
+        <option value="">선택해주세요</option>
+        <option>남성</option>
+        <option>여성</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">선호 성별 <span class="required">*</span></label>
+      <select class="form-input" id="preferred-gender">
+        <option value="">선택해주세요</option>
+        <option>남성</option>
+        <option>여성</option>
+        <option>상관없음</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">선호 인원 <span class="required">*</span></label>
+      <select class="form-input" id="group-size">
+        <option value="">선택해주세요</option>
+        <option>1:1 버디</option>
+        <option>소그룹 (3~5명)</option>
+        <option>상관없음</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">한 줄 소개</label>
+      <input type="text" class="form-input" id="intro" placeholder="자유롭게 적어주세요 (선택)">
+    </div>
 
-<div class="consent-row">
-  <input type="checkbox" id="consent">
-  <label for="consent">개인정보 수집 및 이용에 동의합니다.</label>
-</div>
-<div class="consent-row">
-  <input type="checkbox" id="consent2">
-  <label for="consent2">매칭 후 발생하는 모든 상황에 대한 책임은 당사자에게 있습니다.</label>
-</div>
-<div class="consent-row">
-  <input type="checkbox" id="consent3">
-  <label for="consent3">문제 행동 발생 시 서비스 이용이 제한될 수 있습니다.</label>
-</div>
+    <div class="consent-row">
+      <input type="checkbox" id="consent">
+      <label for="consent">개인정보 수집 및 이용에 동의합니다.</label>
+    </div>
+    <div class="consent-row">
+      <input type="checkbox" id="consent2">
+      <label for="consent2">매칭 후 발생하는 모든 상황에 대한 책임은 당사자에게 있습니다.</label>
+    </div>
+    <div class="consent-row">
+      <input type="checkbox" id="consent3">
+      <label for="consent3">문제 행동 발생 시 서비스 이용이 제한될 수 있습니다.</label>
+    </div>
 
-<div class="price-box">
-  <div class="price-row">
-    <span>라이딩 친구 뽑기</span>
-    <span>3,900원</span>
-  </div>
-  <div class="price-row" style="font-size:12px; color:#aaa;">
-    <span>커피 한 잔 값으로 라이딩 친구가 생깁니다</span>
-  </div>
-  <div class="price-total">
-    <span>최종 금액</span>
-    <span>3,900원</span>
-  </div>
-</div>
+    <div class="price-box">
+      <div class="price-row">
+        <span>라이딩 친구 뽑기</span>
+        <span>3,900원</span>
+      </div>
+      <div class="price-row" style="font-size:12px; color:#aaa;">
+        <span>커피 한 잔 값으로 라이딩 친구가 생깁니다</span>
+      </div>
+      <div class="price-total">
+        <span>최종 금액</span>
+        <span>3,900원</span>
+      </div>
+    </div>
 
-<div class="step-nav">
-  <button class="btn-prev" onclick="prevStep(3)">← 이전</button>
-  <button class="btn-next" onclick="submitForm()">뽑기 신청 🏍️</button>
-</div>
+    <div class="step-nav">
+      <button class="btn-prev" onclick="prevStep(3)">← 이전</button>
+      <button class="btn-next" onclick="submitForm()">뽑기 신청 🏍️</button>
+    </div>
 
-<div class="account-box" style="margin-top:16px;">
-  <div class="label">계좌이체 안내</div>
-  <div class="account-row">
-    <span class="key">은행</span>
-    <span class="val">신한은행</span>
-  </div>
-  <div class="account-row">
-    <span class="key">계좌번호</span>
-    <span class="val">110-524-893778</span>
-  </div>
-  <div class="account-row">
-    <span class="key">예금주</span>
-    <span class="val">남헌우</span>
-  </div>
-  <div class="account-note">
-    입금자명을 <strong>신청 시 작성하신 이름</strong>으로 해주세요.<br>
-    입금 확인 후 조건에 맞는 라이더가 확보되는 즉시 연락드립니다.
-  </div>
-</div>
+    <div class="account-box" style="margin-top:16px;">
+      <div class="label">계좌이체 안내</div>
+      <div class="account-row">
+        <span class="key">은행</span>
+        <span class="val">신한은행</span>
+      </div>
+      <div class="account-row">
+        <span class="key">계좌번호</span>
+        <span class="val">110-524-893778</span>
+      </div>
+      <div class="account-row">
+        <span class="key">예금주</span>
+        <span class="val">남헌우</span>
+      </div>
+      <div class="account-note">
+        입금자명을 <strong>신청 시 작성하신 이름</strong>으로 해주세요.<br>
+        입금 확인 후 조건에 맞는 라이더가 확보되는 즉시 연락드립니다.
+      </div>
+    </div>
 
-<div class="notice-box" style="background:#f0f7ff; border-color:#b3d4f5; color:#1565c0;">
-  매칭은 신청 순서대로 진행됩니다. 조건에 맞는 라이더가 확보되는 즉시 연락드립니다.
-</div>
-```
-
+    <div class="notice-box" style="background:#f0f7ff; border-color:#b3d4f5; color:#1565c0;">
+      매칭은 신청 순서대로 진행됩니다. 조건에 맞는 라이더가 확보되는 즉시 연락드립니다.
+    </div>
   </div>
 </div>
 
@@ -1078,8 +1069,5 @@ line-height: 1.6;
 
   renderReviews();
 </script>
-
 </body>
 </html>
-
-
