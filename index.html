@@ -971,7 +971,7 @@
       return;
     }
 
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7rUHuLzKeOZtlHf8M82z6o2xImwmyBvYhDXBd7hJImdh4327k2hWxKrrEEeTQIWo0/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbws62qyA1f8Eq_qzxPOW4uUek8yt9rP1lDdAoRc88umVP0kgkHNstwnayyfKIkbeIZy/exec';
 
     const btn = document.querySelector('.submit-btn');
     btn.textContent = '신청 중...';
@@ -995,27 +995,33 @@
       intro: document.getElementById('intro').value.trim()
     };
 
-    fetch(APPS_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
-      redirect: 'follow'
-    })
-    .then(r => r.json())
-    .then(res => {
+    // CORS 우회 - iframe form submit 방식
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = APPS_SCRIPT_URL;
+    form.target = 'hidden_iframe';
+
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'data';
+    input.value = JSON.stringify(payload);
+    form.appendChild(input);
+
+    const iframe = document.createElement('iframe');
+    iframe.name = 'hidden_iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+    document.body.appendChild(form);
+
+    iframe.onload = function() {
       btn.textContent = '뽑기 신청 🏍️';
       btn.disabled = false;
-      if (res.success) {
-        document.getElementById('modal').classList.add('active');
-      } else {
-        alert(res.message || '신청 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
-    })
-    .catch(() => {
-      btn.textContent = '뽑기 신청 🏍️';
-      btn.disabled = false;
-      alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
-    });
+      document.getElementById('modal').classList.add('active');
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+    };
+
+    form.submit();
   }
 
   function closeModal() {
