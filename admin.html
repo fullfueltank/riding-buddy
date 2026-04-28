@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>관리자 — 라이딩 친구 뽑기</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --red: #ff3d00;
+    --gray: #888;
+    --light: #f5f5f5;
+    --border: #e0e0e0;
+    --green: #00c853;
+    --orange: #ff6d00;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #f0f0f0;
+    color: var(--black);
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  .login-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .login-box {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 16px;
+    padding: 40px 32px;
+    width: 320px;
+    text-align: center;
+  }
+
+  .login-title {
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .login-sub {
+    color: var(--gray);
+    font-size: 13px;
+    margin-bottom: 24px;
+  }
+
+  .login-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: var(--white);
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    margin-bottom: 12px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 4px;
+  }
+
+  .login-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  /* LAYOUT */
+  .header {
+    background: var(--black);
+    color: var(--white);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: var(--gray);
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+
+  .tab {
+    padding: 14px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray);
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+
+  .tab.active {
+    color: var(--black);
+    border-bottom-color: var(--red);
+  }
+
+  .content {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* DASHBOARD */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--gray);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  .stat-value.red { color: var(--red); }
+  .stat-value.green { color: var(--green); }
+  .stat-value.orange { color: var(--orange); }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .refresh-btn {
+    padding: 6px 14px;
+    background: var(--light);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  .table-scroll {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  th {
+    padding: 10px 12px;
+    background: var(--light);
+    text-align: left;
+    font-weight: 500;
+    color: var(--gray);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tr:hover td { background: #fafafa; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .badge-wait { background: #fff3e0; color: #e65100; }
+  .badge-done { background: #e8f5e9; color: #2e7d32; }
+  .badge-black { background: #fce4ec; color: #c62828; }
+  .badge-confirmed { background: #e8f5e9; color: #2e7d32; }
+  .badge-unconfirmed { background: #fff3e0; color: #e65100; }
+
+  .action-btn {
+    padding: 4px 10px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    margin-right: 4px;
+  }
+
+  .btn-confirm { background: #e8f5e9; color: #2e7d32; }
+  .btn-black { background: #fce4ec; color: #c62828; }
+  .btn-match { background: #e3f2fd; color: #1565c0; }
+
+  /* AUTO MATCH */
+  .suggestion-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .suggestion-card:hover { border-color: var(--red); }
+
+  .suggestion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .suggestion-names {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .suggestion-score {
+    background: var(--red);
+    color: var(--white);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .suggestion-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .confirm-match-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--gray);
+    font-size: 14px;
+  }
+
+  .section-hidden { display: none; }
+</style>
+</head>
+<body>
+
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-box">
+    <div class="login-title">🏍️ 관리자 로그인</div>
+    <div class="login-sub">라이딩 친구 뽑기</div>
+    <input type="password" class="login-input" id="pwInput" placeholder="••••" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">입장</button>
+  </div>
+</div>
+
+<div id="mainApp" style="display:none;">
+  <div class="header">
+    <div>
+      <div class="header-title">🏍️ 라이딩 친구 뽑기 관리자</div>
+      <div class="header-sub">CUB KOREA × ICETRAY</div>
+    </div>
+    <button class="refresh-btn" onclick="loadAll()">🔄 새로고침</button>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('dashboard')">📊 대시보드</div>
+    <div class="tab" onclick="showTab('applicants')">📋 신청자 목록</div>
+    <div class="tab" onclick="showTab('autoMatch')">🤖 자동 매칭</div>
+    <div class="tab" onclick="showTab('matches')">🤝 매칭 내역</div>
+    <div class="tab" onclick="showTab('blacklist')">🚫 블랙리스트</div>
+  </div>
+
+  <div class="content">
+
+    <!-- 대시보드 -->
+    <div id="tab-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">총 신청자</div>
+          <div class="stat-value" id="stat-total">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">입금 확인</div>
+          <div class="stat-value green" id="stat-confirmed">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">입금 미확인</div>
+          <div class="stat-value orange" id="stat-unconfirmed">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">매칭 대기</div>
+          <div class="stat-value orange" id="stat-waiting">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">매칭 완료</div>
+          <div class="stat-value green" id="stat-matched">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">총 매출</div>
+          <div class="stat-value red" id="stat-revenue">-</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">입금 확인 매출</div>
+          <div class="stat-value green" id="stat-confirmed-revenue">-</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 신청자 목록 -->
+    <div id="tab-applicants" class="section-hidden">
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">신청자 목록</div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>신청일</th>
+                <th>이름</th>
+                <th>전화번호</th>
+                <th>지역</th>
+                <th>바이크</th>
+                <th>배기량</th>
+                <th>스타일</th>
+                <th>페이스</th>
+                <th>성별</th>
+                <th>입금</th>
+                <th>상태</th>
+                <th>신청횟수</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="applicants-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 자동 매칭 -->
+    <div id="tab-autoMatch" class="section-hidden">
+      <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
+        <div style="font-size: 15px; font-weight: 700;">🤖 자동 매칭 추천</div>
+        <button class="refresh-btn" onclick="loadAutoMatch()" style="background: var(--black); color: white;">매칭 추천 받기</button>
+      </div>
+      <div id="suggestions-list"><div class="empty">매칭 추천 받기 버튼을 눌러주세요</div></div>
+    </div>
+
+    <!-- 매칭 내역 -->
+    <div id="tab-matches" class="section-hidden">
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">매칭 내역</div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>매칭번호</th>
+                <th>매칭일</th>
+                <th>A 이름</th>
+                <th>A 전화번호</th>
+                <th>B 이름</th>
+                <th>B 전화번호</th>
+              </tr>
+            </thead>
+            <tbody id="matches-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 블랙리스트 -->
+    <div id="tab-blacklist" class="section-hidden">
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">블랙리스트</div>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>이름</th>
+                <th>전화번호</th>
+                <th>사유</th>
+                <th>등록일</th>
+              </tr>
+            </thead>
+            <tbody id="blacklist-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7rUHuLzKeOZtlHf8M82z6o2xImwmyBvYhDXBd7hJImdh4327k2hWxKrrEEeTQIWo0/exec';
+  const PRICE = 3900;
+  const PASSWORD = '1234'; // 여기 비밀번호 바꿔
+
+  let allApplicants = [];
+
+  function login() {
+    const pw = document.getElementById('pwInput').value;
+    if (pw === PASSWORD) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      loadAll();
+    } else {
+      alert('비밀번호가 틀렸습니다.');
+    }
+  }
+
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', ['dashboard','applicants','autoMatch','matches','blacklist'][i] === name);
+    });
+    document.querySelectorAll('[id^="tab-"]').forEach(el => el.classList.add('section-hidden'));
+    document.getElementById('tab-' + name).classList.remove('section-hidden');
+  }
+
+  async function fetchData(action, params = '') {
+    const res = await fetch(`${APPS_SCRIPT_URL}?action=${action}${params}`);
+    return res.json();
+  }
+
+  async function loadAll() {
+    await Promise.all([loadApplicants(), loadMatches(), loadBlacklist()]);
+  }
+
+  async function loadApplicants() {
+    const res = await fetchData('getApplicants');
+    if (!res.success) return;
+    const rows = res.data.slice(1);
+    allApplicants = rows;
+
+    let total = rows.length;
+    let confirmed = 0, unconfirmed = 0, waiting = 0, matched = 0;
+
+    const tbody = document.getElementById('applicants-tbody');
+    tbody.innerHTML = '';
+
+    rows.forEach((row, i) => {
+      const isConfirmed = row[17] === '확인';
+      const status = row[18];
+      if (isConfirmed) confirmed++; else unconfirmed++;
+      if (status === '대기중') waiting++;
+      if (status === '매칭완료') matched++;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${i + 2}</td>
+        <td>${formatDate(row[0])}</td>
+        <td><strong>${row[1]}</strong></td>
+        <td>${row[2]}</td>
+        <td>${row[4]}</td>
+        <td>${row[5]}</td>
+        <td>${row[6]}</td>
+        <td>${row[7]}</td>
+        <td>${row[9]}</td>
+        <td>${row[13]}</td>
+        <td><span class="badge ${isConfirmed ? 'badge-confirmed' : 'badge-unconfirmed'}">${row[17]}</span></td>
+        <td><span class="badge ${status === '대기중' ? 'badge-wait' : status === '매칭완료' ? 'badge-done' : 'badge-black'}">${status}</span></td>
+        <td>${row[19]}회</td>
+        <td>
+          ${!isConfirmed ? `<button class="action-btn btn-confirm" onclick="confirmPayment(${i+2})">입금확인</button>` : ''}
+          ${status !== '블랙리스트' ? `<button class="action-btn btn-black" onclick="addBlacklist(${i+2}, '${row[1]}')">블랙</button>` : ''}
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-confirmed').textContent = confirmed;
+    document.getElementById('stat-unconfirmed').textContent = unconfirmed;
+    document.getElementById('stat-waiting').textContent = waiting;
+    document.getElementById('stat-matched').textContent = matched;
+    document.getElementById('stat-revenue').textContent = (total * PRICE).toLocaleString() + '원';
+    document.getElementById('stat-confirmed-revenue').textContent = (confirmed * PRICE).toLocaleString() + '원';
+  }
+
+  async function loadMatches() {
+    const res = await fetchData('getMatches');
+    if (!res.success) return;
+    const rows = res.data.slice(1);
+    const tbody = document.getElementById('matches-tbody');
+    tbody.innerHTML = '';
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">아직 매칭 내역이 없습니다</td></tr>';
+      return;
+    }
+    rows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row[0]}</td>
+        <td>${formatDate(row[1])}</td>
+        <td><strong>${row[2]}</strong></td>
+        <td>${row[3]}</td>
+        <td><strong>${row[4]}</strong></td>
+        <td>${row[5]}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function loadBlacklist() {
+    const res = await fetchData('getBlacklist');
+    if (!res.success) return;
+    const rows = res.data.slice(1);
+    const tbody = document.getElementById('blacklist-tbody');
+    tbody.innerHTML = '';
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="4" class="empty">블랙리스트가 없습니다</td></tr>';
+      return;
+    }
+    rows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${row[0]}</strong></td>
+        <td>${row[1]}</td>
+        <td>${row[2]}</td>
+        <td>${formatDate(row[3])}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function confirmPayment(row) {
+    if (!confirm('입금 확인 처리하시겠습니까?')) return;
+    await fetchData('confirmPayment', `&row=${row}`);
+    await loadApplicants();
+  }
+
+  async function addBlacklist(row, name) {
+    const reason = prompt(`${name}님을 블랙리스트에 추가합니다.\n사유를 입력해주세요:`);
+    if (!reason) return;
+    await fetchData('addBlacklist', `&row=${row}&reason=${encodeURIComponent(reason)}`);
+    await loadAll();
+    alert('블랙리스트에 추가되었습니다.');
+  }
+
+  async function loadAutoMatch() {
+    const list = document.getElementById('suggestions-list');
+    list.innerHTML = '<div class="empty">매칭 추천 중...</div>';
+    const res = await fetchData('autoMatch');
+    if (!res.success || !res.suggestions.length) {
+      list.innerHTML = '<div class="empty">매칭 가능한 조합이 없습니다. 입금 확인된 대기자가 2명 이상이어야 합니다.</div>';
+      return;
+    }
+    list.innerHTML = res.suggestions.map(s => `
+      <div class="suggestion-card">
+        <div class="suggestion-header">
+          <div class="suggestion-names">🏍️ ${s.nameA} × ${s.nameB}</div>
+          <div class="suggestion-score">점수 ${s.score}</div>
+        </div>
+        <div class="suggestion-details">
+          <div>스타일: ${s.details.스타일}</div>
+          <div>페이스: ${s.details.페이스}</div>
+          <div>시간대: ${s.details.시간대}</div>
+          <div>배기량: ${s.details.배기량}</div>
+        </div>
+        <div style="font-size:12px; color:#aaa; margin-bottom: 12px;">
+          📞 ${s.phoneA} / ${s.phoneB}
+        </div>
+        <button class="confirm-match-btn" onclick="confirmMatch(${s.rowA}, ${s.rowB}, '${s.nameA}', '${s.nameB}')">
+          이 조합으로 매칭 확정
+        </button>
+      </div>
+    `).join('');
+  }
+
+  async function confirmMatch(rowA, rowB, nameA, nameB) {
+    if (!confirm(`${nameA} × ${nameB} 매칭을 확정하시겠습니까?`)) return;
+    await fetchData('completeMatch', `&rowA=${rowA}&rowB=${rowB}`);
+    await loadAll();
+    alert('매칭 완료! 카톡방에 두 분을 초대해주세요 🏍️');
+    loadAutoMatch();
+  }
+
+  function formatDate(val) {
+    if (!val) return '-';
+    const d = new Date(val);
+    if (isNaN(d)) return val;
+    return `${d.getMonth()+1}/${d.getDate()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+</script>
+</body>
+</html>
