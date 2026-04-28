@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>라이딩 버디 매칭 — CUB KOREA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.10/dayjs.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --red: #ff3d00;
+    --gray: #888;
+    --light-gray: #f5f5f5;
+    --border: #e0e0e0;
+  }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+  }
+
+  .hero {
+    background: var(--black);
+    color: var(--white);
+    padding: 80px 24px 60px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-size: clamp(48px, 10vw, 80px);
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .hero-title span { color: var(--red); }
+
+  .hero-sub {
+    font-size: 15px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  .badge-row {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
+
+  .section {
+    padding: 48px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 20px;
+  }
+
+  .info-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .info-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 300;
+    color: #333;
+    line-height: 1.6;
+  }
+
+  .info-list li::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--red);
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 24px;
+  }
+
+  .form-section {
+    padding: 48px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--black);
+  }
+
+  .form-label .required {
+    color: var(--red);
+    margin-left: 2px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--white);
+    color: var(--black);
+    transition: border-color 0.2s;
+    outline: none;
+    appearance: none;
+  }
+
+  .form-input:focus {
+    border-color: var(--black);
+  }
+
+  select.form-input {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+
+  .form-hint {
+    font-size: 12px;
+    color: var(--gray);
+    margin-top: 6px;
+  }
+
+  .price-box {
+    background: var(--light-gray);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  .price-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .submit-btn:hover { background: #222; }
+  .submit-btn:active { background: var(--red); }
+
+  .account-box {
+    background: var(--black);
+    color: var(--white);
+    border-radius: 12px;
+    padding: 24px;
+    margin-top: 16px;
+  }
+
+  .account-box .label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  .account-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .account-row .key { color: rgba(255,255,255,0.5); font-weight: 300; }
+  .account-row .val { font-weight: 500; }
+
+  .account-note {
+    margin-top: 16px;
+    font-size: 12px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 14px;
+  }
+
+  .notice-box {
+    background: #fff8f6;
+    border: 1px solid #ffd5c8;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: #c0392b;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .reviews-section {
+    padding: 48px 24px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .review-form {
+    background: var(--light-gray);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+
+  .star {
+    font-size: 24px;
+    color: #ddd;
+    transition: color 0.15s;
+    user-select: none;
+  }
+
+  .star.active { color: #f5a623; }
+
+  .review-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Noto Sans KR', sans-serif;
+    resize: none;
+    height: 80px;
+    outline: none;
+    margin-bottom: 12px;
+    background: var(--white);
+  }
+
+  .review-input:focus { border-color: var(--black); }
+
+  .review-submit {
+    padding: 10px 20px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+  }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .review-item {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+  }
+
+  .review-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .review-stars { color: #f5a623; font-size: 13px; }
+  .review-date { font-size: 12px; color: var(--gray); }
+  .review-text { font-size: 14px; font-weight: 300; line-height: 1.7; color: #333; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 36px 28px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .modal-icon {
+    font-size: 40px;
+    margin-bottom: 16px;
+  }
+
+  .modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .modal-text {
+    font-size: 14px;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .modal-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--black);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans KR', sans-serif;
+    cursor: pointer;
+    margin-bottom: 10px;
+  }
+
+  .modal-btn.secondary {
+    background: var(--light-gray);
+    color: var(--black);
+  }
+
+  .footer {
+    background: var(--black);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 32px 24px;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 2px;
+  }
+
+  .footer a {
+    color: var(--red);
+    text-decoration: none;
+  }
+
+  .consent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .consent-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--black);
+    flex-shrink: 0;
+  }
+
+  .consent-row label {
+    font-size: 13px;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">CUB KOREA × ICETRAY</div>
+  <div class="hero-title">라이딩<br><span>친구 뽑기</span></div>
+  <div class="hero-sub">
+    3,900원으로 라이딩 친구를 뽑아보세요<br>
+    천재두뇌 AI가 딱 맞는 라이더를 찾아드립니다<br>
+    <span style="font-size:12px; opacity:0.4;">(사실 사람이 하지만 열심히 합니다)</span>
+  </div>
+  <div class="badge-row">
+    <span class="badge">📍 서울 한정</span>
+    <span class="badge">꽝 없음</span>
+    <span class="badge">커피 한 잔 값</span>
+    <span class="badge">바알못 환영</span>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">이런 분께 추천해요</div>
+  <ul class="info-list">
+    <li>주변에 같이 달릴 라이더가 없는 분</li>
+    <li>새로운 라이딩 친구를 사귀고 싶은 분</li>
+    <li>바이크 잘 몰라도 괜찮습니다. 바알못 환영해요</li>
+    <li>혼자 와인딩, 투어링 가기 아쉬운 분</li>
+    <li style="color:#aaa; font-size:13px;">※ 꽝 없음. 단, 라이딩하다 생기는 일은 책임 못 집니다 🏍️</li>
+  </ul>
+</div>
+
+<div class="divider"></div>
+
+<div class="section">
+  <div class="section-title">매칭 방식</div>
+  <ul class="info-list">
+    <li>신청 폼 작성 → 배기량 · 스타일 기반 매칭 → 카톡방에 두 분을 초대 후 나가겠습니다</li>
+    <li>매칭은 신청 순서대로 진행되며, 조건에 맞는 라이더가 확보되는 즉시 연락드립니다</li>
+    <li>배기량은 원활한 매칭을 위해 인접 단계까지 매칭될 수 있습니다 (예: 쿼터급 ↔ 미들급)</li>
+    <li>매칭 후 만남 여부는 당사자 간 결정입니다</li>
+  </ul>
+</div>
+
+<div class="divider"></div>
+
+<div class="form-section">
+  <div class="section-title">매칭 신청하기</div>
+
+  <div class="form-group">
+    <label class="form-label">이름 <span class="required">*</span></label>
+    <input type="text" class="form-input" id="name" placeholder="실명을 입력해주세요">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">휴대전화번호 <span class="required">*</span></label>
+    <input type="tel" class="form-input" id="phone" placeholder="010-0000-0000">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">인스타그램 아이디</label>
+    <input type="text" class="form-input" id="insta" placeholder="@없이 입력해주세요 (없으면 공란)">
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">서울 거주 구 <span class="required">*</span></label>
+    <select class="form-input" id="region">
+      <option value="">선택해주세요</option>
+      <option>강남구</option>
+      <option>강동구</option>
+      <option>강북구</option>
+      <option>강서구</option>
+      <option>관악구</option>
+      <option>광진구</option>
+      <option>구로구</option>
+      <option>금천구</option>
+      <option>노원구</option>
+      <option>도봉구</option>
+      <option>동대문구</option>
+      <option>동작구</option>
+      <option>마포구</option>
+      <option>서대문구</option>
+      <option>서초구</option>
+      <option>성동구</option>
+      <option>성북구</option>
+      <option>송파구</option>
+      <option>양천구</option>
+      <option>영등포구</option>
+      <option>용산구</option>
+      <option>은평구</option>
+      <option>종로구</option>
+      <option>중구</option>
+      <option>중랑구</option>
+    </select>
+    <div class="form-hint">참고용으로만 사용되며, 서울 전 지역 매칭 가능합니다</div>
+  </div>
+
+  <div class="form-group" id="region-etc-group" style="display:none;"></div>
+
+  <div class="form-group">
+    <label class="form-label">바이크 종류 <span class="required">*</span></label>
+    <select class="form-input" id="bike-type">
+      <option value="">선택해주세요</option>
+      <option>스쿠터 / 맥시스쿠터</option>
+      <option>슈퍼커브 / 언더본</option>
+      <option>네이키드</option>
+      <option>스포츠 (SS)</option>
+      <option>클래식 / 레트로</option>
+      <option>크루저</option>
+      <option>어드벤처 / ADV</option>
+      <option>오프로드 / 엔듀로</option>
+      <option>투어러</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">배기량 <span class="required">*</span></label>
+    <select class="form-input" id="cc">
+      <option value="">선택해주세요</option>
+      <option>원동기 (125cc 이하)</option>
+      <option>쿼터급 (250~400cc)</option>
+      <option>미들급 (500~750cc)</option>
+      <option>리터급 (800~1000cc)</option>
+      <option>오버리터급 (1000cc 이상)</option>
+    </select>
+    <div class="form-hint">원활한 매칭을 위해 인접 배기량대와 매칭될 수 있습니다. (예: 쿼터급 ↔ 미들급)</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">라이딩 스타일 <span class="required">*</span></label>
+    <select class="form-input" id="style">
+      <option value="">선택해주세요</option>
+      <option>시내</option>
+      <option>와인딩</option>
+      <option>투어링</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">주로 타는 시간대 <span class="required">*</span></label>
+    <select class="form-input" id="ride-time">
+      <option value="">선택해주세요</option>
+      <option>주중 낮</option>
+      <option>주중 저녁</option>
+      <option>주말</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">라이딩 페이스 <span class="required">*</span></label>
+    <select class="form-input" id="pace">
+      <option value="">선택해주세요</option>
+      <option>여유롭게</option>
+      <option>보통</option>
+      <option>빠르게</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">선호 라이딩 거리 <span class="required">*</span></label>
+    <select class="form-input" id="distance">
+      <option value="">선택해주세요</option>
+      <option>가볍게 (카페 투어, 10km 내외)</option>
+      <option>적당히 (50km 내외)</option>
+      <option>원 없이 (100km 이상)</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">차간주행 <span class="required">*</span></label>
+    <select class="form-input" id="lane-split">
+      <option value="">선택해주세요</option>
+      <option>함 (차와 차 사이로 주행)</option>
+      <option>안 함</option>
+      <option>상관없음</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">라이딩 경력 <span class="required">*</span></label>
+    <select class="form-input" id="experience">
+      <option value="">선택해주세요</option>
+      <option>1년 미만</option>
+      <option>1~3년</option>
+      <option>3년 이상</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">본인 성별 <span class="required">*</span></label>
+    <select class="form-input" id="gender">
+      <option value="">선택해주세요</option>
+      <option>남성</option>
+      <option>여성</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">선호 성별 <span class="required">*</span></label>
+    <select class="form-input" id="preferred-gender">
+      <option value="">선택해주세요</option>
+      <option>남성</option>
+      <option>여성</option>
+      <option>상관없음</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">선호 인원 <span class="required">*</span></label>
+    <select class="form-input" id="group-size">
+      <option value="">선택해주세요</option>
+      <option>1:1 버디</option>
+      <option>소그룹 (3~5명)</option>
+      <option>상관없음</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">한 줄 소개</label>
+    <input type="text" class="form-input" id="intro" placeholder="자유롭게 적어주세요 (선택)">
+  </div>
+
+  <div class="consent-row">
+    <input type="checkbox" id="consent">
+    <label for="consent">개인정보 수집 및 이용에 동의합니다. 수집된 정보는 라이딩 버디 매칭 목적으로만 사용됩니다.</label>
+  </div>
+
+  <div class="consent-row">
+    <input type="checkbox" id="consent2">
+    <label for="consent2">매칭 후 발생하는 모든 상황에 대한 책임은 당사자에게 있으며, 운영자는 연결 서비스만 제공합니다.</label>
+  </div>
+
+  <div class="consent-row">
+    <input type="checkbox" id="consent3">
+    <label for="consent3">불쾌한 언행, 위험 운전 등 문제 행동이 발생할 경우 서비스 이용이 제한될 수 있습니다.</label>
+  </div>
+
+  <div class="price-box">
+    <div class="price-row">
+      <span>라이딩 버디 매칭</span>
+      <span>3,900원</span>
+    </div>
+    <div class="price-row" style="font-size:12px; color:#aaa;">
+      <span>커피 한 잔 값으로 라이딩 친구가 생깁니다</span>
+    </div>
+    <div class="price-total">
+      <span>최종 금액</span>
+      <span>3,900원</span>
+    </div>
+  </div>
+
+  <button class="submit-btn" onclick="submitForm()">매칭 신청하기</button>
+
+  <div class="account-box">
+    <div class="label">계좌이체 안내</div>
+    <div class="account-row">
+      <span class="key">은행</span>
+      <span class="val">신한은행</span>
+    </div>
+    <div class="account-row">
+      <span class="key">계좌번호</span>
+      <span class="val">110-524-893778</span>
+    </div>
+    <div class="account-row">
+      <span class="key">예금주</span>
+      <span class="val">남헌우</span>
+    </div>
+    <div class="account-note">
+      입금자명을 <strong>신청 시 작성하신 이름</strong>으로 해주세요.<br>
+      입금 확인 후 조건에 맞는 라이더가 확보되는 즉시 연락드립니다.
+    </div>
+  </div>
+
+  <div class="notice-box">
+    매칭은 신청 순서대로 진행됩니다. 조건에 맞는 라이더가 확보되는 즉시 연락드립니다.
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="reviews-section">
+  <div class="section-title">매칭 후기</div>
+
+  <div class="review-form">
+    <div class="stars" id="star-input">
+      <span class="star" data-v="1">★</span>
+      <span class="star" data-v="2">★</span>
+      <span class="star" data-v="3">★</span>
+      <span class="star" data-v="4">★</span>
+      <span class="star" data-v="5">★</span>
+    </div>
+    <textarea class="review-input" id="review-text" placeholder="매칭 후기를 남겨주세요 🏍️"></textarea>
+    <button class="review-submit" onclick="submitReview()">후기 등록</button>
+  </div>
+
+  <div class="review-list" id="review-list">
+    <div style="text-align:center; color:#aaa; font-size:14px; padding: 20px 0;">아직 후기가 없습니다. 첫 번째 후기를 남겨주세요!</div>
+  </div>
+</div>
+
+<div class="footer">
+  <div style="margin-bottom: 6px;">운영 <a href="https://instagram.com/cub_korea" target="_blank">@cub_korea</a></div>
+  <div>CUB KOREA × ICETRAY</div>
+</div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-icon">🏍️</div>
+    <div class="modal-title">신청이 접수되었습니다</div>
+    <div class="modal-text" id="modal-text">
+      조건에 맞는 라이더가 확보되는 즉시<br>카카오톡으로 연락드릴게요!
+    </div>
+    <button class="modal-btn" onclick="closeModal()">확인</button>
+  </div>
+</div>
+
+<script>
+  let selectedStars = 0;
+
+  const STORAGE_KEY = 'riding_buddy_reviews';
+
+  function getRegion() {
+    return document.getElementById('region').value;
+  }
+
+  document.getElementById('star-input').addEventListener('click', function(e) {
+    if (e.target.classList.contains('star')) {
+      selectedStars = parseInt(e.target.dataset.v);
+      updateStars();
+    }
+  });
+
+  function updateStars() {
+    document.querySelectorAll('#star-input .star').forEach((s, i) => {
+      s.classList.toggle('active', i < selectedStars);
+    });
+  }
+
+  function submitForm() {
+    const name = document.getElementById('name').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const region = getRegion();
+    const bikeType = document.getElementById('bike-type').value;
+    const cc = document.getElementById('cc').value;
+    const style = document.getElementById('style').value;
+    const rideTime = document.getElementById('ride-time').value;
+    const pace = document.getElementById('pace').value;
+    const distance = document.getElementById('distance').value;
+    const laneSplit = document.getElementById('lane-split').value;
+    const exp = document.getElementById('experience').value;
+    const gender = document.getElementById('gender').value;
+    const prefGender = document.getElementById('preferred-gender').value;
+    const groupSize = document.getElementById('group-size').value;
+    const consent = document.getElementById('consent').checked;
+    const consent2 = document.getElementById('consent2').checked;
+    const consent3 = document.getElementById('consent3').checked;
+
+    if (!name || !phone || !region || !bikeType || !cc || !style || !rideTime || !pace || !distance || !laneSplit || !exp || !gender || !prefGender || !groupSize) {
+      alert('필수 항목을 모두 입력해주세요.');
+      return;
+    }
+
+    if (!consent || !consent2 || !consent3) {
+      alert('모든 동의 항목을 체크해주세요.');
+      return;
+    }
+
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7rUHuLzKeOZtlHf8M82z6o2xImwmyBvYhDXBd7hJImdh4327k2hWxKrrEEeTQIWo0/exec';
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = '신청 중...';
+    btn.disabled = true;
+
+    const payload = {
+      name, phone,
+      insta: document.getElementById('insta').value.trim(),
+      region,
+      bikeType,
+      cc,
+      style,
+      rideTime,
+      pace,
+      distance,
+      laneSplit,
+      experience: exp,
+      gender,
+      preferredGender: prefGender,
+      groupSize,
+      intro: document.getElementById('intro').value.trim()
+    };
+
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
+    .then(r => r.json())
+    .then(res => {
+      btn.textContent = '매칭 신청하기';
+      btn.disabled = false;
+      if (res.success) {
+        document.getElementById('modal').classList.add('active');
+      } else {
+        alert(res.message || '신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+      }
+    })
+    .catch(() => {
+      btn.textContent = '매칭 신청하기';
+      btn.disabled = false;
+      alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+    });
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+
+  function submitReview() {
+    if (selectedStars === 0) { alert('별점을 선택해주세요.'); return; }
+    const text = document.getElementById('review-text').value.trim();
+    if (!text) { alert('후기를 입력해주세요.'); return; }
+
+    const reviews = getReviews();
+    reviews.unshift({
+      stars: selectedStars,
+      text,
+      date: dayjs().format('YYYY.MM.DD')
+    });
+    saveReviews(reviews);
+    renderReviews();
+
+    selectedStars = 0;
+    updateStars();
+    document.getElementById('review-text').value = '';
+  }
+
+  function getReviews() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    } catch { return []; }
+  }
+
+  function saveReviews(reviews) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews)); } catch {}
+  }
+
+  function renderReviews() {
+    const reviews = getReviews();
+    const list = document.getElementById('review-list');
+    if (!reviews.length) {
+      list.innerHTML = '<div style="text-align:center; color:#aaa; font-size:14px; padding: 20px 0;">아직 후기가 없습니다. 첫 번째 후기를 남겨주세요!</div>';
+      return;
+    }
+    list.innerHTML = reviews.map(r => `
+      <div class="review-item">
+        <div class="review-meta">
+          <span class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</span>
+          <span class="review-date">${r.date}</span>
+        </div>
+        <div class="review-text">${r.text}</div>
+      </div>
+    `).join('');
+  }
+
+  renderReviews();
+</script>
+</body>
+</html>
