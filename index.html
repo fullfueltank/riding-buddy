@@ -997,20 +997,17 @@
 
     fetch(APPS_SCRIPT_URL, {
       method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(payload)
     })
-    .then(r => r.json())
-    .then(res => {
-      btn.textContent = '매칭 신청하기';
+    .then(() => {
+      btn.textContent = '뽑기 신청 🏍️';
       btn.disabled = false;
-      if (res.success) {
-        document.getElementById('modal').classList.add('active');
-      } else {
-        alert(res.message || '신청 중 오류가 발생했습니다. 다시 시도해주세요.');
-      }
+      document.getElementById('modal').classList.add('active');
     })
     .catch(() => {
-      btn.textContent = '매칭 신청하기';
+      btn.textContent = '뽑기 신청 🏍️';
       btn.disabled = false;
       alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
     });
