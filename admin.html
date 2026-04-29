@@ -620,33 +620,78 @@
     const list = document.getElementById('suggestions-list');
     list.innerHTML = '<div class="empty">매칭 추천 중...</div>';
     const res = await fetchData('autoMatch');
-    if (!res.success || !res.suggestions.length) {
+    if (!res.success) {
+      list.innerHTML = '<div class="empty">오류가 발생했습니다.</div>';
+      return;
+    }
+
+    let html = '';
+
+    // 1:1 버디
+    if (res.suggestions && res.suggestions.length) {
+      html += '<div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:2px; margin-bottom:12px;">1:1 버디 매칭</div>';
+      html += res.suggestions.map(s => `
+        <div class="suggestion-card">
+          <div class="suggestion-header">
+            <div class="suggestion-names">🏍️ ${s.nameA} × ${s.nameB}</div>
+            <div class="suggestion-score">점수 ${s.score}</div>
+          </div>
+          <div class="suggestion-details">
+            <div>스타일: ${s.details.스타일}</div>
+            <div>페이스: ${s.details.페이스}</div>
+            <div>시간대: ${s.details.시간대}</div>
+            <div>배기량: ${s.details.배기량}</div>
+          </div>
+          <div style="font-size:12px; color:#aaa; margin-bottom: 12px;">
+            📞 ${s.phoneA} / ${s.phoneB}
+          </div>
+          <button class="confirm-match-btn" onclick="confirmMatch(${s.rowA}, ${s.rowB}, '${s.nameA}', '${s.nameB}')">
+            이 조합으로 매칭 확정
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // 소그룹
+    if (res.groupSuggestions && res.groupSuggestions.length) {
+      html += '<div style="font-size:13px; font-weight:700; color:var(--red); letter-spacing:2px; margin:24px 0 12px;">소그룹 매칭</div>';
+      html += res.groupSuggestions.map((g, idx) => `
+        <div class="suggestion-card" style="border-color: #ffd32a;">
+          <div class="suggestion-header">
+            <div class="suggestion-names">👥 소그룹 ${g.details.인원}</div>
+            <div class="suggestion-score" style="background:#ffd32a; color:#000;">${g.details.스타일}</div>
+          </div>
+          <div class="suggestion-details">
+            <div>스타일: ${g.details.스타일}</div>
+            <div>시간대: ${g.details.시간대}</div>
+            <div>인원: ${g.details.인원}</div>
+          </div>
+          <div style="font-size:12px; color:#aaa; margin-bottom:12px;">
+            ${g.members.map(m => `${m.name} (${m.phone})`).join(' / ')}
+          </div>
+          <button class="confirm-match-btn" style="background:#ffd32a; color:#000;" onclick="confirmGroupMatch(${JSON.stringify(g.members).replace(/"/g, "'")}, '${g.members.map(m=>m.name).join(', ')}')">
+            소그룹 매칭 확정
+          </button>
+        </div>
+      `).join('');
+    }
+
+    if (!html) {
       list.innerHTML = '<div class="empty">매칭 가능한 조합이 없습니다. 입금 확인된 대기자가 2명 이상이어야 합니다.</div>';
       return;
     }
-    list.innerHTML = res.suggestions.map(s => `
-      <div class="suggestion-card">
-        <div class="suggestion-header">
-          <div class="suggestion-names">🏍️ ${s.nameA} × ${s.nameB}</div>
-          <div class="suggestion-score">점수 ${s.score}</div>
-        </div>
-        <div class="suggestion-details">
-          <div>스타일: ${s.details.스타일}</div>
-          <div>페이스: ${s.details.페이스}</div>
-          <div>시간대: ${s.details.시간대}</div>
-          <div>배기량: ${s.details.배기량}</div>
-        </div>
-        <div style="font-size:12px; color:#aaa; margin-bottom: 12px;">
-          📞 ${s.phoneA} / ${s.phoneB}
-        </div>
-        <button class="confirm-match-btn" onclick="confirmMatch(${s.rowA}, ${s.rowB}, '${s.nameA}', '${s.nameB}')">
-          이 조합으로 매칭 확정
-        </button>
-      </div>
-    `).join('');
+
+    list.innerHTML = html;
   }
 
-  async function confirmMatch(rowA, rowB, nameA, nameB) {
+  async function confirmGroupMatch(members, names) {
+    if (!confirm(`소그룹 매칭을 확정하시겠습니까?\n\n${names}`)) return;
+    const rows = members.map(m => m.row).join(',');
+    await fetchData('completeGroupMatch', `&rows=${rows}`);
+    await loadAll();
+    alert(`소그룹 매칭 완료! 카톡방에 ${members.length}명을 초대해주세요 🏍️`);
+    loadAutoMatch();
+  }
     if (!confirm(`${nameA} × ${nameB} 매칭을 확정하시겠습니까?`)) return;
     await fetchData('completeMatch', `&rowA=${rowA}&rowB=${rowB}`);
     await loadAll();
