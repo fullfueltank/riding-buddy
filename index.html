@@ -945,7 +945,7 @@
   function submitForm() {
     const name = document.getElementById('name').value.trim();
     const phone = document.getElementById('phone').value.trim();
-    const region = getRegion();
+    const region = document.getElementById('region').value;
     const bikeType = document.getElementById('bike-type').value;
     const cc = document.getElementById('cc').value;
     const style = document.getElementById('style').value;
@@ -995,33 +995,20 @@
       intro: document.getElementById('intro').value.trim()
     };
 
-    // CORS 우회 - iframe form submit 방식
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = APPS_SCRIPT_URL;
-    form.target = 'hidden_iframe';
-
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'data';
-    input.value = JSON.stringify(payload);
-    form.appendChild(input);
-
-    const iframe = document.createElement('iframe');
-    iframe.name = 'hidden_iframe';
-    iframe.style.display = 'none';
-    document.body.appendChild(iframe);
-    document.body.appendChild(form);
-
-    iframe.onload = function() {
+    fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function() {
       btn.textContent = '뽑기 신청 🏍️';
       btn.disabled = false;
       document.getElementById('modal').classList.add('active');
-      document.body.removeChild(form);
-      document.body.removeChild(iframe);
-    };
-
-    form.submit();
+    }).catch(function() {
+      btn.textContent = '뽑기 신청 🏍️';
+      btn.disabled = false;
+      alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+    });
   }
 
   function closeModal() {
