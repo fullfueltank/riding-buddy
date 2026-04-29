@@ -547,7 +547,6 @@
   <div class="hero-tag">CUB KOREA × ICETRAY</div>
   <div class="hero-title">라이딩<br><span>친구 뽑기</span></div>
   <div class="hero-sub">
-    3,900원으로 라이딩 친구를 뽑아보세요<br>
     천재두뇌 AI가 딱 맞는 라이더를 찾아드립니다<br>
     <span style="font-size:12px; opacity:0.4;">(사실 사람이 하지만 열심히 합니다)</span>
   </div>
@@ -743,6 +742,9 @@
     <div style="height:1px; background:var(--border); margin: 24px 0;"></div>
     <div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">매칭 조건</div>
 
+    <div style="height:1px; background:var(--border); margin: 24px 0;"></div>
+    <div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">나는요</div>
+
     <div class="form-group">
       <label class="form-label">본인 성별 <span class="required">*</span></label>
       <select class="form-input" id="gender">
@@ -752,11 +754,36 @@
       </select>
     </div>
     <div class="form-group">
+      <label class="form-label">본인 연령대 <span class="required">*</span></label>
+      <select class="form-input" id="age">
+        <option value="">선택해주세요</option>
+        <option>20대</option>
+        <option>30대</option>
+        <option>40대</option>
+        <option>50대 이상</option>
+      </select>
+    </div>
+
+    <div style="height:1px; background:var(--border); margin: 24px 0;"></div>
+    <div style="font-size:11px; font-weight:600; letter-spacing:3px; color:var(--red); text-transform:uppercase; margin-bottom:16px;">이런 분 찾아요</div>
+
+    <div class="form-group">
       <label class="form-label">선호 성별 <span class="required">*</span></label>
       <select class="form-input" id="preferred-gender">
         <option value="">선택해주세요</option>
         <option>남성</option>
         <option>여성</option>
+        <option>상관없음</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">선호 연령대 <span class="required">*</span></label>
+      <select class="form-input" id="preferred-age">
+        <option value="">선택해주세요</option>
+        <option>20대</option>
+        <option>30대</option>
+        <option>40대</option>
+        <option>50대 이상</option>
         <option>상관없음</option>
       </select>
     </div>
@@ -845,11 +872,17 @@
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <div class="modal-icon">🏍️</div>
-    <div class="modal-title">신청이 접수되었습니다</div>
+    <div class="modal-title">신청 완료!</div>
     <div class="modal-text" id="modal-text">
-      조건에 맞는 라이더가 확보되는 즉시<br>카카오톡으로 연락드릴게요!
+      조건에 맞는 라이더가 확보되는 즉시<br>연락드릴게요!
     </div>
-    <button class="modal-btn" onclick="closeModal()">확인</button>
+    <div style="background:#0a0a0a; border-radius:12px; padding:20px; margin:16px 0; text-align:center;">
+      <canvas id="share-card" width="540" height="960" style="width:100%; border-radius:8px;"></canvas>
+    </div>
+    <button class="modal-btn" onclick="downloadCard()" style="background:#0984E3; margin-bottom:8px;">
+      📸 스토리 이미지 저장
+    </button>
+    <button class="modal-btn secondary" onclick="closeModal()">닫기</button>
   </div>
 </div>
 
@@ -938,13 +971,15 @@
     const laneSplit = document.getElementById('lane-split').value;
     const exp = document.getElementById('experience').value;
     const gender = document.getElementById('gender').value;
+    const age = document.getElementById('age').value;
     const prefGender = document.getElementById('preferred-gender').value;
+    const prefAge = document.getElementById('preferred-age').value;
     const groupSize = document.getElementById('group-size').value;
     const consent = document.getElementById('consent').checked;
     const consent2 = document.getElementById('consent2').checked;
     const consent3 = document.getElementById('consent3').checked;
 
-    if (!name || !phone || !region || !bikeType || !cc || !style || !rideTime || !pace || !distance || !laneSplit || !exp || !gender || !prefGender || !groupSize) {
+    if (!name || !phone || !region || !bikeType || !cc || !style || !rideTime || !pace || !distance || !laneSplit || !exp || !gender || !age || !prefGender || !prefAge || !groupSize) {
       alert('필수 항목을 모두 입력해주세요.');
       return;
     }
@@ -973,7 +1008,9 @@
       laneSplit,
       experience: exp,
       gender,
+      age,
       preferredGender: prefGender,
+      preferredAge: prefAge,
       groupSize,
       intro: document.getElementById('intro').value.trim()
     };
@@ -987,6 +1024,7 @@
       btn.textContent = '뽑기 신청 🏍️';
       btn.disabled = false;
       document.getElementById('modal').classList.add('active');
+      generateShareCard();
     }).catch(function() {
       btn.textContent = '뽑기 신청 🏍️';
       btn.disabled = false;
@@ -994,8 +1032,92 @@
     });
   }
 
-  function closeModal() {
-    document.getElementById('modal').classList.remove('active');
+  function generateShareCard() {
+    const canvas = document.getElementById('share-card');
+    const ctx = canvas.getContext('2d');
+    const W = 540, H = 960;
+
+    // 배경
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, W, H);
+
+    // 그라디언트 글로우
+    const grd = ctx.createRadialGradient(W/2, H/2, 50, W/2, H/2, 400);
+    grd.addColorStop(0, 'rgba(9,132,227,0.15)');
+    grd.addColorStop(1, 'rgba(9,132,227,0)');
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+
+    // 상단 브랜드
+    ctx.fillStyle = '#0984E3';
+    ctx.font = '600 22px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.letterSpacing = '4px';
+    ctx.fillText('CUB KOREA × ICETRAY', W/2, 100);
+
+    // 메인 텍스트
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 72px sans-serif';
+    ctx.fillText('라이딩', W/2, 280);
+    ctx.fillStyle = '#0984E3';
+    ctx.fillText('친구 뽑기', W/2, 370);
+
+    // 이모지
+    ctx.font = '80px sans-serif';
+    ctx.fillText('🏍️', W/2, 500);
+
+    // 신청 완료 배지
+    ctx.fillStyle = '#0984E3';
+    roundRect(ctx, W/2 - 130, 550, 260, 56, 28);
+    ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('신청 완료 ✓', W/2, 584);
+
+    // 구분선
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(60, 650);
+    ctx.lineTo(W - 60, 650);
+    ctx.stroke();
+
+    // 서브 텍스트
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '300 22px sans-serif';
+    ctx.fillText('꽝 없음 · 선착순 100명 무료', W/2, 710);
+
+    // URL
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '300 18px sans-serif';
+    ctx.fillText('fullfueltank.github.io/riding-buddy', W/2, 760);
+
+    // 하단 브랜드
+    ctx.fillStyle = 'rgba(255,255,255,0.2)';
+    ctx.font = '300 16px sans-serif';
+    ctx.fillText('@cub_korea', W/2, 900);
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function downloadCard() {
+    const canvas = document.getElementById('share-card');
+    const link = document.createElement('a');
+    link.download = '라이딩친구뽑기.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   }
 
   function submitReview() {
@@ -1043,6 +1165,10 @@
         <div class="review-text">${r.text}</div>
       </div>
     `).join('');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
   }
 
   renderReviews();
