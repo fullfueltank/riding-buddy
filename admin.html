@@ -692,6 +692,8 @@
     alert(`소그룹 매칭 완료! 카톡방에 ${members.length}명을 초대해주세요 🏍️`);
     loadAutoMatch();
   }
+
+  async function confirmMatch(rowA, rowB, nameA, nameB) {
     if (!confirm(`${nameA} × ${nameB} 매칭을 확정하시겠습니까?`)) return;
     await fetchData('completeMatch', `&rowA=${rowA}&rowB=${rowB}`);
     await loadAll();
